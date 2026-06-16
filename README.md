@@ -1,7 +1,7 @@
 ````md
-# Employee Management System
+Workforce Management Platform
 
-A full stack Employee Management System built using React, Vite, Spring Boot, and Postgresql.
+A full stack Workforce Management Platform built using React, Vite, Spring Boot, and Postgresql.
 
 ## Features
 
