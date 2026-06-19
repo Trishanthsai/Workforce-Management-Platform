@@ -34,11 +34,26 @@ public class employee {
 
     @Positive(message = "phone_no must be positive")
     private long phone_no;
+    @NotBlank(message = "username cannot be empty")
+    private String username;
+    @NotBlank(message="password cannot be empty")
+    private String password;
+    @NotBlank
+    private String role;
+
 
     public employee() {
     }
 
-    public employee(Integer id, String name, int age, double salary, String designation, String email, long phone_no) {
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public employee(Integer id, String name, int age, double salary, String designation, String email, long phone_no, String username , String password, String role) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -102,5 +117,21 @@ public class employee {
 
     public void setPhone_no(long phone_no) {
         this.phone_no = phone_no;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
