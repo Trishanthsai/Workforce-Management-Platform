@@ -3,8 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.dto.EmployeePasswordChangeRequest;
 import com.example.demo.dto.EmployeeProfileResponse;
 import com.example.demo.dto.EmployeeUpdateProfileRequest;
+import com.example.demo.model.Auditlogs;
 import com.example.demo.model.employee;
+import com.example.demo.repo.Auditlogsrepo;
 import com.example.demo.repo.repo;
+import com.example.demo.service.Auditlogsservice;
 import com.example.demo.service.service;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +33,10 @@ public class controller {
     private PasswordEncoder passwordEncoder;
     @Autowired
     repo r;
+    @Autowired
+    Auditlogsservice auditlogsservice;
+    @Autowired
+    Auditlogsrepo auditlogsrepo;
 
 
     @GetMapping("/employee")
@@ -106,7 +113,8 @@ public class controller {
         e.setEmail(employeeUpdateProfileResponse.getEmail());
         e.setPhone_no(employeeUpdateProfileResponse.getPhone_no());
         e.setAge(employeeUpdateProfileResponse.getAge());
-         r.save(e);
+        r.save(e);
+        auditlogsservice.savelogs(user,"PROFILE_UPDATED");
         return employeeUpdateProfileResponse;
 
     }
@@ -125,6 +133,7 @@ public class controller {
 
                 e.setPassword(passwordEncoder.encode(employeePasswordChangeRequest.getNewPassword()));
                 r.save(e);
+                auditlogsservice.savelogs(user,"PASSWORD_CHANGED");
                 return "password changed successfully";
             }
 
@@ -134,7 +143,10 @@ public class controller {
         }
 
     }
-
+    @GetMapping("/admin/auditlogs")
+    public List<Auditlogs> auditlogsrepo() {
+        return auditlogsrepo.findAll();
+    }
 
 
 
