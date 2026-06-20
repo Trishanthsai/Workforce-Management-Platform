@@ -65,8 +65,12 @@ public class controller {
 
     @PostMapping("/employee")
     public ResponseEntity<employee> addemployee(@Valid @RequestBody employee employee) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        String user = authentication.getName();
         employee.setPassword(passwordEncoder.encode(employee.getPassword()));
         employee saved = service.addemployee(employee);
+        auditlogsservice.savelogs(user,"EMPLOYEE_CREATED");
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
@@ -78,7 +82,11 @@ public class controller {
 
     @DeleteMapping("/employee/{id}")
     public ResponseEntity<String> deleteemployee(@PathVariable Integer id) {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        String user = authentication.getName();
         service.deleteemployee(id);
+        auditlogsservice.savelogs(user,"EMPLOYEE_DELETED");
         return ResponseEntity.ok("employee deleted");
     }
 
