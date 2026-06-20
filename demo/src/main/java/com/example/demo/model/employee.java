@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,6 +38,7 @@ public class employee {
     @NotBlank(message = "username cannot be empty")
     private String username;
     @NotBlank(message="password cannot be empty")
+    @JsonIgnore
     private String password;
     @NotBlank
     private String role;

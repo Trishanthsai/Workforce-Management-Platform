@@ -1,11 +1,11 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.EmployeePasswordChangeRequest;
-import com.example.demo.dto.EmployeeProfileResponse;
-import com.example.demo.dto.EmployeeUpdateProfileRequest;
+import com.example.demo.dto.*;
 import com.example.demo.model.Auditlogs;
+import com.example.demo.model.Task;
 import com.example.demo.model.employee;
 import com.example.demo.repo.Auditlogsrepo;
+import com.example.demo.repo.Taskrepo;
 import com.example.demo.repo.repo;
 import com.example.demo.service.Auditlogsservice;
 import com.example.demo.service.service;
@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,8 @@ public class controller {
     Auditlogsservice auditlogsservice;
     @Autowired
     Auditlogsrepo auditlogsrepo;
+    @Autowired
+    Taskrepo taskrepo;
 
 
     @GetMapping("/employee")
@@ -156,7 +159,55 @@ public class controller {
         return auditlogsrepo.findAll();
     }
 
+    @PostMapping("/admin/task")
+    public String  addtask(@Valid @RequestBody Taskassignment taskassignment) {
+        Optional<employee>emp=r.findById(taskassignment.getEmployeeid());
+        employee e = emp.get();
+        Task task = new Task();
+        task.setTitle(taskassignment.getTitle());
+        task.setDescription(taskassignment.getDescription());
+        task.setStatus(taskassignment.getStatus());
+        task.setPriority(taskassignment.getPriority());
+        task.setEmployee(e);
+        task.setCreatedAt(LocalDateTime.now());
+        taskrepo.save(task);
+        auditlogsservice.savelogs(e.getUsername(),"TASK_ASSIGNED");
 
+        return "Task assigned successfully";
+    }
+    @GetMapping("/employee/task")
+    public List<Task>getmytask(){
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication authentication = context.getAuthentication();
+        String user = authentication.getName();
+        Optional<employee> emp = r.findByUsername(user);
+        employee e = emp.get();
+        return taskrepo.findByemployee(e);
+    }
+    @GetMapping("/admin/task")
+    public List<Task>getalltask(){
+        return taskrepo.findAll();
+    }
+    @PutMapping("/employee/task/{id}/status")
+    public String Taskupdate(@RequestBody TaskUpdate taskUpdate, @PathVariable Integer id) {
+        Optional<Task> task=taskrepo.findById(id);
+        Task t=task.get();
+        t.setStatus(taskUpdate.getStatus());
+        taskrepo.save(t);
+        return "success";
+
+
+    }
+    @PutMapping("/admin/task/{id}/reassign/{taskid}")
+    public String Reassign(@PathVariable Integer id,@PathVariable Integer taskid) {
+        Optional<Task> task=taskrepo.findById(taskid);
+        Task t=task.get();
+        Optional<employee>emp=r.findById(id);
+        employee e = emp.get();
+        t.setEmployee(e);
+        taskrepo.save(t);
+        return"Successfully reassigned";
+    }
 
 
 }
