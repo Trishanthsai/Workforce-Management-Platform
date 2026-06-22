@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,8 +37,8 @@ public class employee {
     private long phone_no;
     @NotBlank(message = "username cannot be empty")
     private String username;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message="password cannot be empty")
-    @JsonIgnore
     private String password;
     @NotBlank
     private String role;
@@ -101,7 +101,7 @@ public class employee {
         return designation;
     }
 
-    public void setDesignation(String designation) {
+    public void setDesignation() {
         this.designation = designation;
     }
 

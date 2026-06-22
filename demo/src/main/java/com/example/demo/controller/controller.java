@@ -7,6 +7,7 @@ import com.example.demo.model.employee;
 import com.example.demo.repo.Auditlogsrepo;
 import com.example.demo.repo.Taskrepo;
 import com.example.demo.repo.repo;
+import com.example.demo.securityconfig.Security;
 import com.example.demo.service.Auditlogsservice;
 import com.example.demo.service.service;
 import jakarta.validation.Valid;
@@ -208,6 +209,39 @@ public class controller {
         taskrepo.save(t);
         return"Successfully reassigned";
     }
+    @GetMapping("/admin/dashboard")
+    public AdminDashboard getAdminDashboard() {
 
+        AdminDashboard adminDashboard = new AdminDashboard();
+
+        adminDashboard.setTotalemployees(r.count());
+        adminDashboard.setTotaltasks(taskrepo.count());
+        adminDashboard.setPendingtasks(taskrepo.countBystatus("PENDING"));
+        adminDashboard.setCompletedtasks(taskrepo.countBystatus("COMPLETED"));
+        adminDashboard.setInprogresstask(taskrepo.countBystatus("IN_PROGRESS"));
+
+        return adminDashboard;
+    }
+    @GetMapping("/employee/dashboard")
+    public EmployeeDashboard getdetails(){
+        EmployeeDashboard employeeDashboard=new EmployeeDashboard();
+        SecurityContext context=SecurityContextHolder.getContext();
+        Authentication auth= context.getAuthentication();
+        String user= auth.getName();
+        employee e=r.findByUsername(user).get();
+        List<Task> tasks = taskrepo.findByemployee(e);
+        employeeDashboard.setName(e.getName());
+        employeeDashboard.setEmail(e.getEmail());
+        employeeDashboard.setDesignation(e.getDesignation());
+        employeeDashboard.setTotaltask((long) tasks.size());
+        long pending = tasks.stream().filter(t -> "PENDING".equals(t.getStatus())).count();
+        long completed = tasks.stream().filter(t -> "COMPLETED".equals(t.getStatus())).count();
+        long inProgress = tasks.stream().filter(t -> "IN_PROGRESS".equals(t.getStatus())).count();
+        employeeDashboard.setPendingtask(pending);
+        employeeDashboard.setCompletedtask(completed);
+        employeeDashboard.setInprogresstask(inProgress);
+
+        return employeeDashboard;
+    }
 
 }
