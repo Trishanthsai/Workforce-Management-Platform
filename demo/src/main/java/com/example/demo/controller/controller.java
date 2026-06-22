@@ -1,14 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.*;
-import com.example.demo.model.Auditlogs;
-import com.example.demo.model.Leave;
-import com.example.demo.model.Task;
-import com.example.demo.model.employee;
-import com.example.demo.repo.Auditlogsrepo;
-import com.example.demo.repo.Taskrepo;
-import com.example.demo.repo.leaverepo;
-import com.example.demo.repo.repo;
+import com.example.demo.model.*;
+import com.example.demo.repo.*;
 import com.example.demo.service.Auditlogsservice;
 import com.example.demo.service.service;
 import jakarta.validation.Valid;
@@ -44,6 +38,8 @@ public class controller {
     Taskrepo taskrepo;
     @Autowired
     leaverepo leaverepo;
+    @Autowired
+    Announcementrepo announcementrepo;
 
 
     @GetMapping("/employee")
@@ -288,15 +284,26 @@ public class controller {
         return "LEAVE APPROVED";
 
     }
-    @PutMapping("/admin/leave/{id}/reject")
-    public String reject(@PathVariable Long  id){
-        Optional<Leave> leave=leaverepo.findById(id);
-        Leave l=leave.get();
-        l.setStatus("REJECTED");
-        leaverepo.save(l);
-        return "LEAVE REJECTED";
+
+    @PostMapping("/admin/announcement")
+    public String makeannouncement(@RequestBody announcement announcement){
+        Announcement announcement1=new Announcement();
+        SecurityContext context=SecurityContextHolder.getContext();
+        Authentication auth= context.getAuthentication();
+        String user= auth.getName();
+        employee e=r.findByUsername(user).get();
+        announcement1.setTitle(announcement.getTitle());
+        announcement1.setMessage(announcement.getMessage());
+        announcement1.setCreatedat(LocalDateTime.now());
+        announcement1.setCreatedBy(user);
+        announcementrepo.save(announcement1);
+        return "Announcement is made succesfully";
+    }
+    @GetMapping("/announcements")
+    public List<Announcement> getAnnouncements(){
+        List<Announcement>listofannouncement=announcementrepo.findAll();
+        return listofannouncement;
 
     }
-
 
 }
