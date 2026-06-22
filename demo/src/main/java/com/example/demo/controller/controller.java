@@ -2,12 +2,13 @@ package com.example.demo.controller;
 
 import com.example.demo.dto.*;
 import com.example.demo.model.Auditlogs;
+import com.example.demo.model.Leave;
 import com.example.demo.model.Task;
 import com.example.demo.model.employee;
 import com.example.demo.repo.Auditlogsrepo;
 import com.example.demo.repo.Taskrepo;
+import com.example.demo.repo.leaverepo;
 import com.example.demo.repo.repo;
-import com.example.demo.securityconfig.Security;
 import com.example.demo.service.Auditlogsservice;
 import com.example.demo.service.service;
 import jakarta.validation.Valid;
@@ -41,6 +42,8 @@ public class controller {
     Auditlogsrepo auditlogsrepo;
     @Autowired
     Taskrepo taskrepo;
+    @Autowired
+    leaverepo leaverepo;
 
 
     @GetMapping("/employee")
@@ -243,5 +246,57 @@ public class controller {
 
         return employeeDashboard;
     }
+    @PostMapping("/employee/applyleave")
+    public String  applyleave(@RequestBody LeaveRequest leaveRequest){
+        Leave leave=new Leave();
+        SecurityContext context=SecurityContextHolder.getContext();
+        Authentication auth= context.getAuthentication();
+        String user= auth.getName();
+        employee e=r.findByUsername(user).get();
+        leave.setFromdate(leaveRequest.getFromdate());
+        leave.setTodate(leaveRequest.getTodate());
+        leave.setLeavetype(leaveRequest.getLeavetype());
+        leave.setReason(leaveRequest.getReason());
+        leave.setEmployee(e);
+        leave.setStatus("PENDING");
+        leave.setAppliedat(LocalDateTime.now());
+        leave.setAdmincomment(null);
+        leaverepo.save(leave);
+        return "Leave applied succesfully";
+    }
+    @GetMapping("/employee/leave")
+    public List<Leave> getleavedetails(){
+        SecurityContext context=SecurityContextHolder.getContext();
+        Authentication auth=context.getAuthentication();
+        String user=auth.getName();
+        employee e=r.findByUsername(user).get();
+        List<Leave>leaves=leaverepo.findByEmployee(e);
+        return leaves;
+
+    }
+    @GetMapping("/admin/leaves")
+    public List<Leave>getallleavedetails(){
+        List<Leave>leaves= leaverepo.findAll();
+        return leaves;
+    }
+    @PutMapping("/admin/leave/{id}/approve")
+    public String approve(@PathVariable Long  id){
+        Optional<Leave> leave=leaverepo.findById(id);
+        Leave l=leave.get();
+        l.setStatus("APPROVED");
+        leaverepo.save(l);
+        return "LEAVE APPROVED";
+
+    }
+    @PutMapping("/admin/leave/{id}/reject")
+    public String reject(@PathVariable Long  id){
+        Optional<Leave> leave=leaverepo.findById(id);
+        Leave l=leave.get();
+        l.setStatus("REJECTED");
+        leaverepo.save(l);
+        return "LEAVE REJECTED";
+
+    }
+
 
 }
