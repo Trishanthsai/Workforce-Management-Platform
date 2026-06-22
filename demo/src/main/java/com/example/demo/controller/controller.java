@@ -40,6 +40,8 @@ public class controller {
     leaverepo leaverepo;
     @Autowired
     Announcementrepo announcementrepo;
+    @Autowired
+    Loginlogrepo loginlogrepo;
 
 
     @GetMapping("/employee")
@@ -304,6 +306,20 @@ public class controller {
         List<Announcement>listofannouncement=announcementrepo.findAll();
         return listofannouncement;
 
+    }
+    @PostMapping("/logout")
+    public String logout() {
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication auth = context.getAuthentication();
+        String username = auth.getName();
+        employee e = r.findByUsername(username).get();
+        Loginlog log = loginlogrepo.findTopByEmployeeAndLogoutTimeIsNullOrderByLoginTimeDesc(e);
+        if (log != null) {
+            log.setLogoutTime(LocalDateTime.now());
+            loginlogrepo.save(log);
+        }
+
+        return "Logged out successfully";
     }
 
 }

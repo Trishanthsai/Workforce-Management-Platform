@@ -3,12 +3,18 @@ package com.example.demo.controller;
 import com.example.demo.Security.AuthRequest;
 import com.example.demo.Security.AuthResponse;
 import com.example.demo.Security.JwtUtil;
+import com.example.demo.model.Loginlog;
+import com.example.demo.model.employee;
+import com.example.demo.repo.Loginlogrepo;
+import com.example.demo.repo.repo;
 import com.example.demo.service.Customeruserdetailservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,6 +28,10 @@ public class AuthController {
 
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    repo r;
+    @Autowired
+    Loginlogrepo loginlogrepo;
 
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
@@ -39,6 +49,13 @@ public class AuthController {
                 );
 
         String token = jwtUtil.generateToken(user);
+        employee e=r.findByUsername(request.getUsername()).get();
+        Loginlog log=new Loginlog();
+        log.setEmployee(e);
+        log.setLoginTime(LocalDateTime.now());
+        loginlogrepo.save(log);
+
+
 
         return new AuthResponse(token);
     }
