@@ -4,6 +4,7 @@ import com.example.demo.dto.*;
 import com.example.demo.model.*;
 import com.example.demo.repo.*;
 import com.example.demo.service.Auditlogsservice;
+import com.example.demo.service.MailService;
 import com.example.demo.service.service;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,8 @@ public class controller {
     Announcementrepo announcementrepo;
     @Autowired
     Loginlogrepo loginlogrepo;
+    @Autowired
+    MailService mailService;
 
 
     @GetMapping("/employee")
@@ -168,13 +171,23 @@ public class controller {
         Task task = new Task();
         task.setTitle(taskassignment.getTitle());
         task.setDescription(taskassignment.getDescription());
-        task.setStatus(taskassignment.getStatus());
         task.setPriority(taskassignment.getPriority());
         task.setEmployee(e);
         task.setCreatedAt(LocalDateTime.now());
+        task.setStatus("PENDING");
         taskrepo.save(task);
         auditlogsservice.savelogs(e.getUsername(),"TASK_ASSIGNED");
-
+        mailService.sendMail(
+                task.getEmployee().getEmail(),
+                "New Task Assigned",
+                "Hello " + e.getName() +
+                        "\n\nA new task has been assigned to you." +
+                        "\n\nTitle: " + task.getTitle() +
+                        "\nDescription: " + task.getDescription() +
+                        "\nPriority: " + task.getPriority() +
+                        "\nStatus: " + task.getStatus()+
+                        "\nAssigned At: " + task.getCreatedAt()
+        );
         return "Task assigned successfully";
     }
     @GetMapping("/employee/task")
@@ -191,14 +204,30 @@ public class controller {
         return taskrepo.findAll();
     }
     @PutMapping("/employee/task/{id}/status")
-    public String Taskupdate(@RequestBody TaskUpdate taskUpdate, @PathVariable Integer id) {
-        Optional<Task> task=taskrepo.findById(id);
-        Task t=task.get();
+    public String Taskupdate(
+            @RequestBody TaskUpdate taskUpdate,
+            @PathVariable Integer id) {
+
+        Optional<Task> task = taskrepo.findById(id);
+        Task t = task.get();
         t.setStatus(taskUpdate.getStatus());
         taskrepo.save(t);
+        if("COMPLETED".equals(t.getStatus())){
+            List<employee> admins = r.findByRole("ADMIN");
+            for(employee admin : admins){
+                mailService.sendMail(
+                        admin.getEmail(),
+                        "Task Completed",
+                        "Employee: "
+                                + t.getEmployee().getName()
+                                + "\nTask Title: "
+                                + t.getTitle()
+                                + "\nStatus: COMPLETED"
+                );
+            }
+        }
+
         return "success";
-
-
     }
     @PutMapping("/admin/task/{id}/reassign/{taskid}")
     public String Reassign(@PathVariable Integer id,@PathVariable Integer taskid) {
@@ -208,6 +237,12 @@ public class controller {
         employee e = emp.get();
         t.setEmployee(e);
         taskrepo.save(t);
+        mailService.sendMail(
+                e.getEmail(),
+                "Task Reassigned",
+                "A task has been assigned to you.\n\nTitle: "
+                        + t.getTitle()
+        );
         return"Successfully reassigned";
     }
     @GetMapping("/admin/dashboard")
@@ -260,6 +295,25 @@ public class controller {
         leave.setAppliedat(LocalDateTime.now());
         leave.setAdmincomment(null);
         leaverepo.save(leave);
+        List<employee> admins = r.findByRole("ADMIN");
+
+        for(employee admin : admins){
+
+            mailService.sendMail(
+                    admin.getEmail(),
+                    "New Leave Request",
+                    "Employee: "
+                            + e.getName()
+                            + "\nLeave Type: "
+                            + leave.getLeavetype()
+                            + "\nFrom: "
+                            + leave.getFromdate()
+                            + "\nTo: "
+                            + leave.getTodate()
+                            + "\nReason: "
+                            + leave.getReason()
+            );
+        }
         return "Leave applied succesfully";
     }
     @GetMapping("/employee/leave")
@@ -277,16 +331,6 @@ public class controller {
         List<Leave>leaves= leaverepo.findAll();
         return leaves;
     }
-    @PutMapping("/admin/leave/{id}/approve")
-    public String approve(@PathVariable Long  id){
-        Optional<Leave> leave=leaverepo.findById(id);
-        Leave l=leave.get();
-        l.setStatus("APPROVED");
-        leaverepo.save(l);
-        return "LEAVE APPROVED";
-
-    }
-
     @PostMapping("/admin/announcement")
     public String makeannouncement(@RequestBody announcement announcement){
         Announcement announcement1=new Announcement();
@@ -299,6 +343,20 @@ public class controller {
         announcement1.setCreatedat(LocalDateTime.now());
         announcement1.setCreatedBy(user);
         announcementrepo.save(announcement1);
+        List<employee> employees = r.findAll();
+
+        for(employee emp : employees){
+
+            mailService.sendMail(
+                    emp.getEmail(),
+                    "Announcement : " + announcement1.getTitle(),
+                    "Hello " + emp.getName()
+                            + "\n\nNew Announcement"
+                            + "\n\nTitle: " + announcement1.getTitle()
+                            + "\nMessage: " + announcement1.getMessage()
+                            + "\n\nRegards,\nHRMS Team"
+            );
+        }
         return "Announcement is made succesfully";
     }
     @GetMapping("/announcements")
@@ -321,5 +379,49 @@ public class controller {
 
         return "Logged out successfully";
     }
+    @PutMapping("/admin/leave/{id}/approve")
+    public String approve(@PathVariable Long id, @RequestBody LeaveDecsionRequest leavedescisionrequest){
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication auth = context.getAuthentication();
+        String username = auth.getName();
+        employee e = r.findByUsername(username).get();
+        Optional<Leave>leave=leaverepo.findById(id);
+        Leave l=leave.get();
+        l.setStatus("APPROVED");
+        l.setAdmincomment(leavedescisionrequest.getComment());
+        leaverepo.save(l);
+        mailService.sendMail(l.getEmployee().getEmail(),
+                "Leave Approved",
+                "Your leave request has been approved.\n\n"
+                        + "Comment: "
+                        + l.getAdmincomment());
+        return "Leave approved succesfully";
+
+    }
+    @PutMapping("/admin/leave/{id}/reject")
+    public String reject(@PathVariable Long id, @RequestBody LeaveDecsionRequest leavedescisionrequest){
+        SecurityContext context = SecurityContextHolder.getContext();
+        Authentication auth = context.getAuthentication();
+        String username = auth.getName();
+        employee e = r.findByUsername(username).get();
+        Optional<Leave>leave=leaverepo.findById(id);
+        Leave l=leave.get();
+        l.setStatus("REJECTED");
+        l.setAdmincomment(leavedescisionrequest.getComment());
+        leaverepo.save(l);
+        mailService.sendMail(l.getEmployee().getEmail(),
+                "Leave Rejected",
+                "Your leave request has been rejected.\n\n"
+                        + "Comment: "
+                        + l.getAdmincomment());
+        return "Leave rejected succesfully";
+
+    }
+    @GetMapping("/admin/loginlogs")
+    public List<Loginlog> getAllLoginLogs() {
+        return loginlogrepo.findAll();
+    }
+
+
 
 }

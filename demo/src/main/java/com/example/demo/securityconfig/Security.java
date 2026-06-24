@@ -1,5 +1,6 @@
 package com.example.demo.securityconfig;
 import com.example.demo.Security.AuthenticationFilter;
+import com.example.demo.Security.RateLimitingFilter;
 import com.example.demo.model.employee;
 import com.example.demo.repo.repo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class Security {
     @Autowired
     private AuthenticationFilter authenticationFilter;
+    @Autowired
+    private RateLimitingFilter rateLimitingFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,7 +40,7 @@ public class Security {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/", "/login", "/auth/login").permitAll()
-
+                        .requestMatchers("/testmail").permitAll()
                         .requestMatchers("/admin/**")
                         .hasRole("ADMIN")
 
@@ -51,6 +54,10 @@ public class Security {
                         authenticationFilter,
                         UsernamePasswordAuthenticationFilter.class
 
+                );
+                http.addFilterBefore(
+                rateLimitingFilter,
+                AuthenticationFilter.class
                 );
 
 
