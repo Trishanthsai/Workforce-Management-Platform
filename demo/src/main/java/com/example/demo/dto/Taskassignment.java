@@ -1,15 +1,17 @@
 package com.example.demo.dto;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public class Taskassignment {
     private String title;
     private String description;
     private String status;
     private String priority;
-    private int employeeid;
+    private Long employeeid;
     private String employee;
     private LocalDateTime created_at;
+    private LocalDate deadline;
 
     public LocalDateTime getCreated_at() {
         return created_at;
@@ -51,11 +53,11 @@ public class Taskassignment {
         this.priority = priority;
     }
 
-    public int getEmployeeid() {
+    public Long getEmployeeid() {
         return employeeid;
     }
 
-    public void setEmployeeid(int employeeid) {
+    public void setEmployeeid(Long employeeid) {
         this.employeeid = employeeid;
     }
 
@@ -67,6 +69,11 @@ public class Taskassignment {
         this.title = title;
     }
 
+    public LocalDate getDeadline() {
+        return deadline;
+    }
 
-
+    public void setDeadline(LocalDate deadline) {
+        this.deadline = deadline;
+    }
 }

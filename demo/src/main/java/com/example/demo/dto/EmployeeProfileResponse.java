@@ -2,14 +2,15 @@ package com.example.demo.dto;
 
 public class EmployeeProfileResponse {
     private String name;
-    private Integer id;
+    private Long id;
     private String username;
     private int age;
     private String designation;
     private String email;
     private long phone_no;
+    private String profilePic;
 
-    public EmployeeProfileResponse(String name, Integer id, String username, int age, String designation, String email, long phone_no) {
+    public EmployeeProfileResponse(String name, Long id, String username, int age, String designation, String email, long phone_no, String profilePic) {
         this.name = name;
         this.id = id;
         this.username = username;
@@ -17,6 +18,7 @@ public class EmployeeProfileResponse {
         this.designation = designation;
         this.email = email;
         this.phone_no = phone_no;
+        this.profilePic = profilePic;
     }
 
     public String getName() {
@@ -27,11 +29,11 @@ public class EmployeeProfileResponse {
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -73,5 +75,13 @@ public class EmployeeProfileResponse {
 
     public void setPhone_no(long phone_no) {
         this.phone_no = phone_no;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 }

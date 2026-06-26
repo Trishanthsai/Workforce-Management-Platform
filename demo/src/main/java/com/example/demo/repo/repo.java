@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import java.util.List;
 import java.util.Optional;
 
-public interface repo extends JpaRepository<employee, Integer> {
+public interface repo extends JpaRepository<employee, Long> {
   Optional<employee> findByUsername(String username);
 
   List<employee> findByRole(String admin);

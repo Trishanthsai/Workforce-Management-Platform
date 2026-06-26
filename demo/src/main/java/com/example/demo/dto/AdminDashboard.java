@@ -6,6 +6,15 @@ public class AdminDashboard {
     private long pendingtasks;
     private long completedtasks;
     private long inprogresstask;
+    private long Announcement;
+
+    public long getAnnouncement() {
+        return Announcement;
+    }
+
+    public void setAnnouncement(long announcement) {
+        Announcement = announcement;
+    }
 
     public long getTotalemployees() {
         return totalemployees;

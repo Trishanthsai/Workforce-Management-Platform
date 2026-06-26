@@ -30,4 +30,18 @@ public class GlobalExceptionHandler {
         error.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Map<String,String>> handleGeneric(Exception ex){
+
+        Map<String,String> error = new HashMap<>();
+
+        error.put("message","Something went wrong");
+
+        return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(error);
+    }
+
+
 }

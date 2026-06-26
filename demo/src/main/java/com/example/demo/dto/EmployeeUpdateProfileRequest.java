@@ -6,6 +6,7 @@ public class EmployeeUpdateProfileRequest {
     private String email;
     private String address;
     private int  age;
+    private String profilePic;
 
     public String getName() {
         return name;
@@ -47,11 +48,23 @@ public class EmployeeUpdateProfileRequest {
         this.age = age;
     }
 
-    public EmployeeUpdateProfileRequest(String name, long phone_no, String email, String address, int age) {
+    public EmployeeUpdateProfileRequest() {
+    }
+
+    public EmployeeUpdateProfileRequest(String name, long phone_no, String email, String address, int age, String profilePic) {
         this.name = name;
         this.phone_no = phone_no;
         this.email = email;
         this.address = address;
         this.age = age;
+        this.profilePic = profilePic;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 }

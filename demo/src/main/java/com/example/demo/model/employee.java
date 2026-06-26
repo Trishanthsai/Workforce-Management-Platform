@@ -15,7 +15,7 @@ public class employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotBlank(message = "name cannot be empty")
     private String name;
@@ -43,6 +43,9 @@ public class employee {
     @NotBlank
     private String role;
 
+    @jakarta.persistence.Column(columnDefinition = "TEXT")
+    private String profilePic;
+
 
     public employee() {
     }
@@ -55,7 +58,7 @@ public class employee {
         this.role = role;
     }
 
-    public employee(Integer id, String name, int age, double salary, String designation, String email, long phone_no, String username , String password, String role) {
+    public employee(Long id, String name, int age, double salary, String designation, String email, long phone_no, String username , String password, String role) {
         this.id = id;
         this.name = name;
         this.age = age;
@@ -65,11 +68,11 @@ public class employee {
         this.phone_no = phone_no;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -101,7 +104,7 @@ public class employee {
         return designation;
     }
 
-    public void setDesignation() {
+    public void setDesignation(String designation) {
         this.designation = designation;
     }
 
@@ -135,5 +138,13 @@ public class employee {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 }
