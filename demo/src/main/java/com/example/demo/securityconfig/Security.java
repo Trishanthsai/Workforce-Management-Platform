@@ -103,21 +103,14 @@ public class Security {
                 admin.setRole("ADMIN");
                 employeeRepo.save(admin);
                 System.out.println("Initialized default admin user: ram_960 / admin123");
+            } else {
+                employee admin = employeeRepo.findByUsername("ram_960").get();
+                admin.setPassword(passwordEncoder.encode("admin123"));
+                employeeRepo.save(admin);
+                System.out.println("Ensured default admin user password is 'admin123'");
             }
 
-            System.out.println("=== INITIALIZING EMPLOYEE PASSWORDS TO 'password123' ===");
-            employeeRepo.findAll().forEach(emp -> {
-                if ("ADMIN".equalsIgnoreCase(emp.getRole())) {
-                    emp.setPassword(passwordEncoder.encode("admin123"));
-                    employeeRepo.save(emp);
-                    System.out.println("Ensured admin password is 'admin123' for user: " + emp.getUsername());
-                } else {
-                    emp.setPassword(passwordEncoder.encode("password123"));
-                    employeeRepo.save(emp);
-                    System.out.println("Reset password for user: " + emp.getUsername());
-                }
-            });
-            System.out.println("=== PASSWORD INITIALIZATION COMPLETE ===");
+            System.out.println("=== INITIALIZATION COMPLETE ===");
         };
     }
 

@@ -37,7 +37,7 @@ public class AnnouncementController {
         announcement1.setCreatedat(LocalDateTime.now());
         announcement1.setCreatedBy(user);
         announcementrepo.save(announcement1);
-        List<employee> employees = r.findAll();
+        List<employee> employees = r.findByRoleNotIgnoreCase("ADMIN");
 
         for(employee emp : employees){
 

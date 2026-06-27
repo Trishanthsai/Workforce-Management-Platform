@@ -25,8 +25,11 @@ public class service {
     @Autowired
     private Loginlogrepo loginlogrepo;
 
+    @Autowired
+    private RefreshTokenrepo refreshTokenrepo;
+
     public List<employee> getemployees() {
-        return r.findAll();
+        return r.findByRoleNotIgnoreCase("ADMIN");
     }
 
     public Page<employee> getemployeesPage(int page, int size, String sortBy, String direction) {
@@ -37,7 +40,7 @@ public class service {
 
         Pageable pageable = PageRequest.of(page, size, sort);
 
-        return r.findAll(pageable);
+        return r.findByRoleNotIgnoreCase("ADMIN", pageable);
     }
 
     public employee addemployee(employee employee) {
@@ -57,6 +60,9 @@ public class service {
 
         // Delete associated login logs
         loginlogrepo.deleteAll(loginlogrepo.findByEmployee(emp));
+
+        // Delete associated refresh tokens
+        refreshTokenrepo.deleteByEmployee(emp);
 
         r.delete(emp);
     }

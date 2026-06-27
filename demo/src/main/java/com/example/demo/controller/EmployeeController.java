@@ -76,7 +76,7 @@ public class EmployeeController {
         System.out.println("========== ADD EMPLOYEE CONTROLLER HIT ==========");
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
-        String user = authentication.getName();
+        String user = (authentication != null) ? authentication.getName() : "anonymous";
 
         String rawPassword = employee.getPassword();
         employee.setPassword(passwordEncoder.encode(rawPassword));
@@ -123,7 +123,7 @@ public class EmployeeController {
     public ResponseEntity<String> deleteemployee(@PathVariable Long id) {
         SecurityContext context = SecurityContextHolder.getContext();
         Authentication authentication = context.getAuthentication();
-        String user = authentication.getName();
+        String user = (authentication != null) ? authentication.getName() : "anonymous";
         service.deleteemployee(id);
         auditlogsservice.savelogs(user,"EMPLOYEE_DELETED");
         return ResponseEntity.ok("employee deleted");

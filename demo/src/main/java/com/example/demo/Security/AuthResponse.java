@@ -1,11 +1,30 @@
 package com.example.demo.Security;
 
 public class AuthResponse {
-    private String token;
+    private String accesstoken;
+    private String refreshtoken;
     private String role;
     private String username;
-    public AuthResponse(String token, String role, String username) {
-        this.token = token;
+
+    public String getAccesstoken() {
+        return accesstoken;
+    }
+
+    public void setAccesstoken(String accesstoken) {
+        this.accesstoken = accesstoken;
+    }
+
+    public String getRefreshtoken() {
+        return refreshtoken;
+    }
+
+    public void setRefreshtoken(String refreshtoken) {
+        this.refreshtoken = refreshtoken;
+    }
+
+    public AuthResponse(String accesstoken, String refreshtoken,String role, String username) {
+        this.accesstoken = accesstoken;
+        this.refreshtoken=refreshtoken;
         this.role=role;
         this.username=username;
     }
@@ -26,12 +45,6 @@ public class AuthResponse {
         this.username = username;
     }
 
-    public String getToken() {
-        return token;
-    }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
 
 }

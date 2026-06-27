@@ -56,7 +56,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
 
             requestCounts.put(username,0);
         }
-        filterChain.doFilter(request,response);
+
         if(currentTime - requestTimes.get(username) > 60000){
 
             requestTimes.put(username,currentTime);

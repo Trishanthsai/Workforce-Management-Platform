@@ -4,10 +4,13 @@ import com.example.demo.Security.AuthRequest;
 import com.example.demo.Security.AuthResponse;
 import com.example.demo.Security.JwtUtil;
 import com.example.demo.model.Loginlog;
+import com.example.demo.model.RefreshToken;
 import com.example.demo.model.employee;
 import com.example.demo.repo.Loginlogrepo;
+import com.example.demo.repo.RefreshTokenrepo;
 import com.example.demo.repo.repo;
 import com.example.demo.service.Customeruserdetailservice;
+import com.example.demo.service.RefreshTokenservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,7 +37,10 @@ public class AuthController {
     repo r;
     @Autowired
     Loginlogrepo loginlogrepo;
-
+    @Autowired
+    RefreshTokenrepo refreshTokenrepo;
+    @Autowired
+    private RefreshTokenservice refreshTokenservice;
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
         System.out.println("LOGIN ENDPOINT HIT");
@@ -51,7 +57,9 @@ public class AuthController {
                 );
 
         String token = jwtUtil.generateToken(user);
+
         employee e=r.findByUsername(request.getUsername()).get();
+        RefreshToken refreshToken=refreshTokenservice.createRefreshToken(e);
         if (!"ADMIN".equalsIgnoreCase(e.getRole())) {
             Loginlog log=new Loginlog();
             log.setEmployee(e);
@@ -60,13 +68,14 @@ public class AuthController {
         }
 
 
-        return new AuthResponse(token, e.getRole(), e.getUsername());
+        return new AuthResponse(token,refreshToken.getRefreshToken(), e.getRole(), e.getUsername());
 
     }
     @PostMapping("/logout")
     public String logout(@RequestParam String username) {
         System.out.println("LOGOUT ENDPOINT HIT FOR USER: " + username);
         employee e = r.findByUsername(username).orElse(null);
+
         if (e != null && !"ADMIN".equalsIgnoreCase(e.getRole())) {
             Loginlog activeLog = loginlogrepo.findTopByEmployeeAndLogoutTimeIsNullOrderByLoginTimeDesc(e);
             if (activeLog != null) {

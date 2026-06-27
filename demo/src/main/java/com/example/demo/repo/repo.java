@@ -11,4 +11,8 @@ public interface repo extends JpaRepository<employee, Long> {
   Optional<employee> findByUsername(String username);
 
   List<employee> findByRole(String admin);
+
+  List<employee> findByRoleNotIgnoreCase(String role);
+
+  org.springframework.data.domain.Page<employee> findByRoleNotIgnoreCase(String role, org.springframework.data.domain.Pageable pageable);
 }
