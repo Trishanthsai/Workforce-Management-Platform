@@ -1,74 +1,91 @@
-````md
-Workforce Management Platform
+# Workforce Management Platform (HRMS)
 
-A full stack Workforce Management Platform built using React, Vite, Spring Boot, and Postgresql.
+A full-stack **Workforce Management Platform (HRMS)** built with **Spring Boot**, **React**, and **PostgreSQL**. The project focuses on implementing real-world business workflows while strengthening backend architecture and security concepts.
+
+---
+
+## Demo Credentials
+
+### Admin
+
+**Username:** `ram_960`  
+**Password:** `admin123`
+
+> Create employee accounts using the admin credentials. Employees can then log in using the credentials assigned during registration.
+
+---
 
 ## Features
 
-- Add Employee
-- View Employee List
-- Update Employee
-- Delete Employee
-- Responsive UI
-- REST API Integration
+### Admin
+- Employee Management (CRUD)
+- Task Assignment & Tracking
+- Leave Approval / Rejection
+- Announcement Management
+- Dashboard Analytics
+- Audit Logs
+- Login Logs
+
+### Employee
+- View & Update Tasks
+- Apply for Leave
+- View Announcements
+- Profile Management
+- Change Password
+
+---
+
+## Email Notifications
+
+Integrated with **Spring Mail**.
+
+Employees automatically receive emails when:
+- A task is assigned
+- A new announcement is published
+- A leave request is approved or rejected
+
+---
+
+## Backend & Security
+
+- Spring Security
+- JWT Authentication
+- Role-Based Access Control (Admin & Employee)
+- BCrypt Password Encryption
+- Refresh Token Generation & Persistent Storage
+- Adaptive API Rate Limiting
+- Global Exception Handling
+- Input Validation
+
+---
 
 ## Tech Stack
 
-### Frontend
+**Backend**
+- Java
+- Spring Boot
+- Spring Security
+- Spring Data JPA
+- PostgreSQL
+- JWT
+- Maven
+
+**Frontend**
 - React
 - Vite
-- CSS
 - Bootstrap
+- Axios
 
-### Backend
-- Spring Boot
-- Spring Data JPA
-- MySQL
-- REST API
+---
 
-## Project Structure
+## Upcoming Features
 
-employee-management-system/
-│
-├── ems-vite/
-│   ├── src/
-│   ├── public/
-│   ├── package.json/
-│   └── vite.config.js/
-│
-├── src/main/java/
-├── src/main/resources/
-├── pom.xml
-└── README.md
+- Complete Refresh Token Authentication Flow
+- Active Session Management
+- Spring Events
+- Redis Caching
+- HTTP-only Cookie Authentication
+- Docker Deployment
 
-## Frontend Setup
-
-```bash
-cd ems-vite
-npm install
-npm run dev
-````
-
-## Backend Setup
-
-```bash
-./mvnw spring-boot:run
-```
-
-## API Endpoints
-
-* GET /employee
-* GET /employee/{id}
-* POST /employee
-* PUT /employee/{id}
-* DELETE /employee/{id}
-
-## Future Improvements
-* Pagination
-* Authentication
-* Role Based Access
-* Audit logs
-
-
-```
-```
+---
+Built as a backend-focused learning project to explore secure application development and enterprise backend concepts.
