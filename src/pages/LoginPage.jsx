@@ -22,10 +22,15 @@ function LoginPage() {
         })
         .then((response) => {
 
-            localStorage.setItem(
-                "token",
-                response.data.token
-            );
+           localStorage.setItem(
+    "token",
+    response.data.accesstoken
+);
+
+localStorage.setItem(
+    "refreshToken",
+    response.data.refreshtoken
+);
 
             localStorage.setItem(
                 "role",
