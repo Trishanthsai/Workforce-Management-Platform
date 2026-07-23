@@ -4,11 +4,112 @@ A full-stack **Workforce Management Platform (HRMS)** built with **Spring Boot**
 
 ---
 
+## Project Structure
+
+```
+Workforce-Management-Platform/
+├── backend/    # Spring Boot REST API
+└── frontend/   # React + Vite Client
+```
+
+---
+
+## Prerequisites
+
+Make sure you have the following installed:
+
+- Java 21 (or the version required by the project)
+- Maven (or use the included Maven Wrapper)
+- Node.js (v18+ recommended)
+- PostgreSQL
+- Git
+
+---
+
+## Getting Started
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Trishanthsai/Workforce-Management-Platform.git
+cd Workforce-Management-Platform
+```
+
+---
+
+### 2. Configure the database
+
+Create a PostgreSQL database.
+
+Update the database configuration in:
+
+```
+backend/src/main/resources/application.properties
+```
+
+Configure:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/your_database
+spring.datasource.username=your_username
+spring.datasource.password=your_password
+```
+
+---
+
+### 3. Run the Backend
+
+Open the `backend` folder in IntelliJ **or** use the terminal.
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+Windows:
+
+```powershell
+.\mvnw.cmd spring-boot:run
+```
+
+Backend runs on:
+
+```
+http://localhost:8080
+```
+
+---
+
+### 4. Run the Frontend
+
+Open the `frontend` folder in VS Code.
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Frontend runs on:
+
+```
+http://localhost:3000
+```
+
+---
+
 ## Demo Credentials
 
 ### Admin
 
-**Username:** `ram_960`  
+**Username:** `ram_960`
+
 **Password:** `admin123`
 
 > Create employee accounts using the admin credentials. Employees can then log in using the credentials assigned during registration.
@@ -18,6 +119,7 @@ A full-stack **Workforce Management Platform (HRMS)** built with **Spring Boot**
 ## Features
 
 ### Admin
+
 - Employee Management (CRUD)
 - Task Assignment & Tracking
 - Leave Approval / Rejection
@@ -27,6 +129,7 @@ A full-stack **Workforce Management Platform (HRMS)** built with **Spring Boot**
 - Login Logs
 
 ### Employee
+
 - View & Update Tasks
 - Apply for Leave
 - View Announcements
@@ -40,6 +143,7 @@ A full-stack **Workforce Management Platform (HRMS)** built with **Spring Boot**
 Integrated with **Spring Mail**.
 
 Employees automatically receive emails when:
+
 - A task is assigned
 - A new announcement is published
 - A leave request is approved or rejected
@@ -61,7 +165,8 @@ Employees automatically receive emails when:
 
 ## Tech Stack
 
-**Backend**
+### Backend
+
 - Java
 - Spring Boot
 - Spring Security
@@ -70,7 +175,8 @@ Employees automatically receive emails when:
 - JWT
 - Maven
 
-**Frontend**
+### Frontend
+
 - React
 - Vite
 - Bootstrap
@@ -88,4 +194,5 @@ Employees automatically receive emails when:
 - Docker Deployment
 
 ---
+
 Built as a backend-focused learning project to explore secure application development and enterprise backend concepts.
