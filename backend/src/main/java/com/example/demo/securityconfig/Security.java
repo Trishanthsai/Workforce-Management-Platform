@@ -62,7 +62,7 @@ public class Security {
                         UsernamePasswordAuthenticationFilter.class
 
                 );
-                http.addFilterBefore(
+                http.addFilterAfter(
                 rateLimitingFilter,
                 AuthenticationFilter.class
                 );

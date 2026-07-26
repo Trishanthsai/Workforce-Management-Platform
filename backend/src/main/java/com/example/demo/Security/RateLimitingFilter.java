@@ -31,6 +31,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                 SecurityContextHolder
                         .getContext()
                         .getAuthentication();
+        System.out.println(auth);
 
         if(auth == null){
 
@@ -39,6 +40,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
             return;
         }
         String username = auth.getName();
+        System.out.println("Username = " + username);
         long currentTime =
                 System.currentTimeMillis();
         requestTimes.putIfAbsent(
@@ -68,8 +70,9 @@ public class RateLimitingFilter extends OncePerRequestFilter {
                 username,
                 requestCounts.get(username) + 1
         );
+        System.out.println("Count = " + requestCounts.get(username));
 
-        if(requestCounts.get(username) > 50){
+        if(requestCounts.get(username) > 5){
 
             response.setStatus(429);
 
