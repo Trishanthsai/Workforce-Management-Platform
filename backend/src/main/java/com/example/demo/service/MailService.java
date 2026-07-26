@@ -27,7 +27,8 @@ public class MailService {
                 System.out.println("Email sent successfully via SMTP to " + to);
                 sentReal = true;
             } catch (Exception e) {
-                System.err.println("SMTP Mail delivery failed for " + to + ": " + e.getMessage());
+                System.err.println("SMTP Mail delivery failed for " + to);
+                e.printStackTrace();
             }
         } else {
             System.out.println("JavaMailSender bean is not configured/available.");

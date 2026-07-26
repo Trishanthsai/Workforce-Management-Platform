@@ -72,7 +72,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         );
         System.out.println("Count = " + requestCounts.get(username));
 
-        if(requestCounts.get(username) > 5){
+        if(requestCounts.get(username) > 5000){
 
             response.setStatus(429);
 
